@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>js 闭包</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        h1 {
+            font-size: 1.5em;
+        }
+
+        h2 {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Some paragraph text</p>
+    <h1>some heading 1 text</h1>
+    <h2>some heading 2 text</h2>
+
+    <a href="#" id="size-12">12</a>
+    <a href="#" id="size-14">14</a>
+    <a href="#" id="size-16">16</a>
+    <!-- 在循环中创建闭包 -->
+    <p id="help">Helpful notes will appear here</p>
+    <p>E-mail:
+        <input type="text" id="email" name="email">
+    </p>
+    <p>Name:
+        <input type="text" id="name" name="name">
+    </p>
+    <p>Age:
+        <input type="text" id="age" name="age">
+    </p>
+    <script type="text/javascript">
+        // 这种问题的解决方法之一就是使用更多的闭包，比如使用之前提到的函数工厂：
+        // function showHelp(help) {
+        //     document.getElementById('help').innerHTML = help;
+        // }
+
+        // function makeHelpCallback(help) {
+        //     return function () {
+        //         showHelp(help);
+        //     }
+        // }
+
+        // function setupHelp() {
+        //     var helpText = [
+        //         { 'id': 'email', 'help': 'Your e-mail address' },
+        //         { 'id': 'name', 'help': 'Your full name' },
+        //         { 'id': 'age', 'help': 'Your age (you must be over 16)' }
+        //     ];
+
+
+        //     for (var i = 0; i < helpText.length; i++) {
+        //         var item = helpText[i];
+        //         document.getElementById(item.id).onfocus = makeHelpCallback(item.help); //这里使用一个函数工厂
+
+        //         let item = helpText[i];    //限制作用域只在当前块内 ES2015 let
+        //         document.getElementById(item.id).onfocus = function() {
+        //             showHelp(item.help);
+        //          }
+        //     }
+        // }
+
+        // setupHelp();
+
+        // 使用匿名函数解决这个问题的另外一种写法是这样的：
+        function showHelp(help) {
+            document.getElementById('help').innerHTML = help;
+        }
+        function setupHelp() {
+            var helpText = [
+                {
+                    'id': 'email',
+                    'help': 'Your e-mail address'
+                },
+                {
+                    'id': 'name',
+                    'help': 'Your full name'
+                },
+                {
+                    'id': 'age',
+                    'help': 'Your age (you must be over 16)'
+                }
+            ];
+
+            for (var i = 0; i < helpText.length; i++) {
+                (function () {
+                    var item = helpText[i];
+                    document.getElementById(item.id).onfocus = function () {
+                        showHelp(item.help);
+                    }
+                })(); // 立即调用绑定函数，使用正确的值绑定到事件上；而不是使用循环结束的值
+            }
+        }
+        setupHelp();
+
+        //在不是必需的情况下，在其它函数中创建函数是不明智的。因为闭包对脚本性能具有负面影响，包括处理速度和内存消耗。
+        // 闭包实战场景之回调
+        function makeSizer(size) {
+            console.log(size);
+            return function () {
+                document.body.style.fontSize = size + 'px';
+            };
+        }
+
+        var size12 = makeSizer(12);
+        var size14 = makeSizer(14);
+        var size16 = makeSizer(16);
+        document.getElementById('size-12').onclick = size12;
+        document.getElementById('size-14').onclick = size14;
+        document.getElementById('size-16').onclick = size16;
+    </script>
+    <script>
+        // 词法作用域  JS解析器如何处理嵌套函数中的变量
+        // 词法作用域是指一个变量在源码中声明的位置作为它的作用域。同时嵌套的函数可以访问到其外层作用域中声明的变量
+        function init() {
+            var name = 'Mozilla';  //name是init函数创建的局部变量
+            function displayName() {  // displayName()是函数内部方法，一个闭包
+                console.log(name);  //它使用了父函数声明的变量
+            }
+            displayName();
+        }
+        init();
+        // init()函数创建了本地变量name和函数displayName(),
+        // displayName()是定义在init()内部的内部函数，因此只能在init()函数内被访问。
+        // displayName() 没有内部变量，但是由于内部函数可以访问外部函数的变量，displayName()可以访问init()中的变量name。
+
+        function makeFunc() {
+            var name = 'Mozilla';
+            function displayName() {
+                console.log(name);
+            }
+            return displayName;
+        }
+
+        var myFunc = makeFunc();  //makeFunc() 返回了一个闭包 闭包由函数和它的词法环境组成。这个环境指的是函数创建时，它可以访问的所有变量
+        myFunc();  //Mozilla
+        // 由于 displayName() 持有了 name 的引用，
+        // myFunc 持有了 displayName() 的引用，
+        // 因此 myFunc 调用时，name 还是处于可以访问的状态]
+
+        function makeAdder(x) {  //接受一个参数x,然后返回一个函数，它的参数是y，返回值是x+y
+            return function (y) {
+                return x + y;
+            };
+        }
+        //本质上，makeAdder() 是一个函数工厂 — 为它传入一个参数就可以创建一个参数与其他值求和的函数
+        var add5 = makeAdder(5);
+        var add10 = makeAdder(10);
+        //使用函数工厂创建了两个函数，一个将会给参数加 5，另一个加 10。
+        console.log(add5(2)); //7
+        console.log(add10(2)); //12
+        //add5 和 add10 都是闭包。他们使用相同的函数定义，但词法环境不同。
+        // 在 add5 中，x 是 5；add10 中 x 是 10
+
+        // 闭包有用之处在于它可以将一些数据和操作它的函数关联起来。这和面向对象编程明显相似。
+        // 在面对象编程中，我们可以将某些数据（对象的属性）与一个或者多个方法相关联
+        // 想只用一个方法操作一个对象时，可以使用闭包。
+
+        // 闭包模拟私有方法
+        // 使用闭包定义能访问私有函数和私有变量的公有函数。这种方式也叫做模块模式：
+        var counter = (function () {
+            var privateCounter = 0;
+            function changeBy(val) {
+                privateCounter += val;
+            }
+            return {
+                increment: function () {
+                    changeBy(1);
+                },
+                decrement: function () {
+                    changeBy(-1);
+                },
+                value: function () {
+                    return privateCounter;
+                }
+            };
+        })();
+
+        console.log(counter.value());  //0
+        counter.increment();
+        counter.increment();
+        console.log(counter.value()); //2
+        counter.decrement();
+        console.log(counter.value()); //1
+
+        // 之前的例子中，每个闭包都有其独自的词法环境。
+        // 但是这个例子中，三个方法 counter.value(), 
+        // counter.increment() 和 counter.decrement() 共享一个词法环境。
+
+        // 将这个函数保存到另一个变量中，以便创建多个计数器
+        var makeCounter = function () {
+            var privateCounter = 0;
+            function changeBy(val) {
+                privateCounter += val;
+            }
+            return {
+                increment: function () {
+                    changeBy(1);
+                },
+                decrement: function () {
+                    changeBy(-1);
+                },
+                value: function () {
+                    return privateCounter;
+                }
+            };
+        };
+        var counter1 = makeCounter();
+        var counter2 = makeCounter();
+        console.log(counter1.value()); //0
+        counter1.increment();
+        counter1.increment();
+        console.log(counter1.value()); //2
+        counter1.decrement();
+        console.log(counter1.value()); //1
+        console.log(counter2.value()); //0
+
+        // 现在两个计数器 counter1, counter2 持有不同的词法环境，它俩有各自的 privateCounter 与值。
+        // 调用其中一个计数器，不会影响另一个的值。
+        // 这样使用闭包可以提供很多面向对象编程里的好处，比如数据隐藏和封装。
+
+        // 注意性能
+        // 在不是必需的情况下，在其它函数中创建函数是不明智的。
+        // 因为闭包对脚本性能具有负面影响，包括处理速度和内存消耗。
+
+        // 比如，在创建新的对象或者类时，方法通常应该关联到对象的原型，而不是定义到对象的构造器中。
+        // 因为这将导致每次构造器被调用，方法都会被重新赋值一次（也就是说，创建每一个对象时都会重新为方法赋值）
+        // 举个栗子：
+        function MyObject(name, message) {
+            this.name = name.toString();
+            this.message = message.toString();
+            this.getName = function () {
+                return this.name;
+            };
+
+            this.getMessage = function () {
+                return this.message;
+            }
+        }
+        // 上面的代码没有利用闭包的优点，我们可以把它改成这样：
+
+        function MyObject(name, message) {
+            this.name = name.toString();
+            this.message = message.toString();
+        }
+        MyObject.prototype = {
+            getName: function () {
+                return this.name;
+            },
+            getMessage: function () {
+                return this.message;
+            }
+        };
+        // 然而一般来说，不建议重定义原型。
+        // 下面的代码将属性添加到已有的原型上：
+        function MyObject(name, message) {
+            this.name = name.toString();
+            this.message = message.toString();
+        }
+        MyObject.prototype.getName = function() {
+            return this.name;
+        };
+        MyObject.prototype.getMessage = function() {
+            return this.message;
+        }
+
+        // 但是，我们还可以将上面的代码简写成这样：
+        function MyObject(name, message) {
+            this.name = name.toString();
+            this.message = message.toString();
+        }
+        (function() {
+            this.getName = function() {
+                return this.name;
+            };
+            this.getMessage = function() {
+                return this.message;
+            };
+        }).call(MyObject.prototype);
+        
+        // 在前面的三个示例中，继承的原型可以为所有对象共享，且不必在每一次创建对象时重新定义方法。
+    </script>
+</body>
+
+</html>

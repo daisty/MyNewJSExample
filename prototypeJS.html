@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>js原型+构造函数</title>
+</head>
+<body>
+        <!-- s原型+构造函数 -->
+    <script type="text/javascript">
+        function Person(name, age){
+            this.name = name;
+            this.age = age;
+        }
+        //所有实例都共享sayHello方法
+        Person.prototype.sayHello = function(){
+            console.log(this.name + "---" + this.age);
+        };
+        var personOne = new Person("lucy",22);
+        var personTwo = new Person("zhangsan", 26);
+        personOne.sayHello();  //lucy---22
+        personTwo.sayHello();  //zhangsan---26
+        console.log(personOne.sayHello == personTwo.sayHello); //true
+    </script>
+    <!-- 工厂模式 -->
+    <script type="text/javascript">
+        function createPerson(name, age, job){
+            var obj = new Object();
+            obj.name = name;
+            obj.age = age;
+            obj.job = job;
+            obj.sayMyself = function(){
+                console.log(this.name + "---" + this.age + "---" + this.job);
+            };
+            return obj;
+        };
+        var personOne = createPerson("Mike", 23, "student");
+        var personTwo = createPerson("gem", 32, "worker");
+        personOne.sayMyself(); //Mike---23---student
+        personTwo.sayMyself(); //gem---32---worker
+        //返回的都是object 无法识别对象类型 不知道他们是哪个对象的实例
+        console.log(typeof personOne);  //object
+        console.log(typeof personTwo);  //object
+
+        //   代理模式
+        
+
+    </script>
+</body>
+</html>
