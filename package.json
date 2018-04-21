@@ -1,0 +1,31 @@
+{
+  "name": "my-package",
+  "version": "1.0.0",
+  "description": "Record some front-end knowledge points",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daisty/MyNewJSExample.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daisty/MyNewJSExample/issues"
+  },
+  "homepage": "https://github.com/daisty/MyNewJSExample#readme",
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "no-console": "off"
+    }
+  },
+  "devDependencies": {
+    "eslint-plugin-promise": "^3.7.0"
+  }
+}
