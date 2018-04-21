@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>工厂模式</title>
+</head>
+<body>
+    <!-- 工厂模式可以理解为解决多个相似的问题 -->
+    <script>
+        function CreatePerson(name, age, sex) {
+            var obj = new Object();
+            obj.name = name;
+            obj.age = age;
+            obj.sex = sex;
+            obj.sayName = function() {
+                return this.name;
+            }
+            return obj;
+        }
+        var p1 = new CreatePerson("lady", '22', '女');
+        var p2 = new CreatePerson("chen", '26', '男');
+        console.log(p1.name);
+        console.log(p1.age);
+        console.log(p1.sex);
+
+        /**
+         * 父类的构造函数如下
+         */
+
+        //  定义自行车的构造函数
+        var BicycleShop = function(){};
+        BicycleShop.prototype = {
+            constructor: BicycleShop,
+            /*
+             * 买自行车这个方法
+             * @param {model} 自行车型号
+             */
+             sellBicycle: function(model){
+                 var bicycle = this.createBicycle(model);
+                 //执行A业务逻辑
+                 bicycle.A();
+
+                 //执行B业务逻辑
+                 bicycle.B();
+
+                 return bicycle;
+             },
+             createBicycle: function(model) {
+                 throw new Error("父类是抽象类不能直接调用，需要子类重写该方法");
+             }
+        };
+    </script>
+</body>
+</html>
