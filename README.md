@@ -2,8 +2,8 @@
 Record some front-end knowledge points
 
 ## add eslint step frist
-   npm install -g eslint
-   node green.js
+      npm install -g eslint
+      node green.js
 
 ## second step
     eslint green.js
