@@ -8,12 +8,12 @@ Record some front-end knowledge points
 ## second step
     eslint green.js
     
-# then new eslint configuration file .eslintrc.js
+### then new eslint configuration file .eslintrc.js
 
-# see the configuration file .eslint.js for details
+### see the configuration file .eslint.js for details
 
-## a self-written configuration named selint-config-lei when learning ESLint
-# execute the following command to install it:
+### a self-written configuration named selint-config-lei when learning ESLint
+## execute the following command to install it:
   npm install -g eslint-config-lei
   
 ## if error ESLint couldn't find the plugin "eslint-plugin-promise, you can:
