@@ -332,6 +332,152 @@
             return result;
         };
 
+        // es6解构赋值
+        let [a, b, c] = [1, 2, 3];
+
+        let [a, b, c = 'default'] = [1, 2];
+
+        let [a, ...b] = [1, 2, 3];
+
+        let [a, b, c] = 'yes';
+
+        console.log(a);
+        console.log(b);
+        console.log(c);
+
+        // 快速排序（递归）
+        function quickSort(arr) {
+            if (arr.length <= 1) return arr;
+            let midIndex = Math.floor(arr.length / 2);
+            let midNum = arr.splice(midIndex, 1)[0];
+            let left = [];
+            let right = [];
+            for (let i = 0; i < arr.length; i++) {
+                let cur = arr[i];
+                if (cur <= midNum) {
+                    left.push(cur);
+                } else {
+                    right.push(cur);
+                }
+            }
+            return quickSort(left).concat(midNum, quickSort(right));
+        }
+
+        let arr = [2, 4, 12, 9, 22, 10, 18, 6];
+        quickSort(arr);
+
+        // 数组去重几种方法
+        const arr = [1, 2, 1, 2, 3, 4, 2, 1, 3];
+
+        // 1 ES6
+        let newArr = [...new Set(arr)];
+
+        // 2
+        const arr = [1, 2, 1, 2, 3, 4, 'l', 2, 1, 3, 'l'];
+        const newArr = arr.filter(function (ele, index, array) {
+            return index === array.indexOf(ele)
+        });
+        console.log(newArr); // [ 1, 2, 3, 4, 'l' ]
+
+        // 3
+        Array.prototype.unique2 = function () {
+            let newArr = [];
+            let len = this.length;
+            for (let i = 0; i < len; i++) {
+                let cur = this[i];
+                if (newArr.indexOf(cur) === -1) {
+                    newArr[newArr.length] = cur;
+                }
+            }
+            return newArr;
+        }
+        console.log(arr.unique1());
+
+        // 4
+        Array.prototype.unique3 = function () {
+            let newArr = this.slice(0);
+            let len = this.length;
+            let obj = {};
+            for (let i = 0; i < len; i++) {
+                let cur = newArr[i];
+                if (obj[cur]) {
+                    newArr[i] = newArr[newArr.length - 1];
+                    newArr.length--;
+                    i--;
+                    continue;
+                }
+                obj[cur] = cur;
+            }
+            return newArr;
+        }
+        console.log(arr.unique3());
+
+        // 5
+        Array.prototype.unique4 = function () {
+            let json = {}, newArr = [], len = this.length;
+            for (var i = 0; i < len; i++) {
+                let cur = this[i];
+                if (typeof json[cur] == "undefined") {
+                    json[cur] = true;
+                    newArr.push(cur)
+                }
+            }
+            return newArr;
+        }
+        console.log(arr.unique4());
+
+        // 字符串去除相邻的重复项 如：'aabbccddeexxxxaa' => 'abcdexa'
+        // 正则表达式
+        let str = 'aabbccddeexxxaaa';
+        function unip1(str) {
+            //return str.replace(/([a-z])(\1){1,}/g, '$1');
+            return str.replace(/(.)(?=\1)/g, '');
+        }
+        console.log(unip1(str));
+
+        //数组方式
+        function unip2(str) {
+            let arr = str.split('');
+            let newArr = [arr[0]];
+            for (let i = 1; i < arr.length; i++) {
+                let cur = arr[i];
+                if (cur !== newArr[newArr.length - 1]) {
+                    newArr.push(cur);
+                }
+            }
+            return newArr.join('');
+        }
+
+        console.log(unip2(str));
+
+        // 求相邻两项最大和
+        // 一
+        let arr1 = [-1, 3, 1, -5, 2]; // 如 [2, 4, -4, -3] => 4
+        function sum(arr) {
+            let prev = arr[0];
+            let sumArr = [];
+            let len = arr.length;
+            for (let i = 1; i < len; i++) {
+                let cur = arr[i];
+                sumArr.push(cur + prev);
+                prev = cur;
+            }
+            return Math.max(...sumArr);
+        }
+        console.log(sum(arr1));
+
+        // 二
+        function maxsum(arr) {
+            const M = [arr[0]];
+            let max = M[0];
+
+            for (let i = 1; i < arr.length; i++) {
+                M[i] = Math.max(arr[i], M[i - 1] + arr[i]);
+                max = Math.max(M[i], max);
+            }
+            return max;
+        }
+
     </script>
 </body>
 
